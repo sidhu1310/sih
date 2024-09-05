@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Schema</title>
+</head>
+<body>
+  <h1>Database Schema</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Schema</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Owner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% schemaData.forEach(row => { %>
+        <tr>
+          <td><%= row.table_schema %></td>
+          <td><%= row.table_name %></td>
+          <td><%= row.table_type %></td>
+          <td><%= row.table_owner %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

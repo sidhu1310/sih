@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment</title>
+   
+    <style>
+      /* Global Styles */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Poppins', sans-serif;
+      }
+
+      body {
+          background-color: #f4f4f4;
+          color: #333;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          padding: 2rem;
+      }
+
+      h1 {
+          font-size: 2.5rem;
+          margin-bottom: 2rem;
+          color: #007acc;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          animation: fadeIn 1s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+      }
+
+      form {
+          background-color: #fff;
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 500px;
+          animation: slideInUp 1s ease-in-out;
+      }
+
+      @keyframes slideInUp {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+      }
+
+      label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: #007acc;
+      }
+
+      input, select {
+          width: 100%;
+          padding: 0.8rem;
+          margin-bottom: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 1rem;
+      }
+
+      button {
+          width: 100%;
+          padding: 0.8rem;
+          background-color: #007acc;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background-color 0.3s, transform 0.2s;
+      }
+
+      button:hover {
+          background-color: #005b99;
+          transform: translateY(-2px);
+      }
+  </style>  
+
+</head>
+<body>
+    <h1>Book an Appointment</h1>
+    <form action="/book-appointment" method="POST">
+      <label for="patient_name">Patient Name:</label>
+      <input type="text" name="patient_name" required><br>
+    
+      <label for="disease">Disease:</label>
+      <!-- Dropdown for diseases -->
+      <select name="disease" id="disease" required>
+        <option value="">Select a Disease</option>
+        <option value="Heart Attack">Heart Attack</option>
+        <option value="Skin Rash">Skin Rash</option>
+        <option value="Child Fever">Child Fever</option>
+        <option value="Migraine">Migraine</option>
+        <option value="Fracture">Fracture</option>
+        <option value="Kidney Stones">Kidney Stones</option>
+        <option value="Diabetes">Diabetes</option>
+        <option value="Depression">Depression</option>
+        <option value="Cancer">Cancer</option>
+        <option value="Asthma">Asthma</option>
+        <option value="Arthritis">Arthritis</option>
+        <option value="UTI">UTI</option>
+        <option value="Pregnancy">Pregnancy</option>
+        <option value="Hearing Loss">Hearing Loss</option>
+      </select><br>
+    
+      <label for="severity">Severity:</label>
+      <select name="severity" required>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select><br>
+    
+      <button type="submit">Book Appointment</button>
+    </form>
+</body>
+</html>

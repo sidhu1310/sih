@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bed Allocation</title>
+    
+    <style>
+        .matrix-table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .matrix-table td, .matrix-table th {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            width: 50px;
+            height: 50px;
+            cursor: pointer; /* Add pointer cursor to indicate clickable cells */
+        }
+        .matrix-table img {
+            width: 40px; /* Adjust image size */
+            height: 40px; /* Adjust image size */
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+            z-index: 1000; /* Sit on top */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%; /* Could be more or less, depending on screen size */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bed Allocation</h1>
+    
+    <!-- Bed Allocation Table -->
+    <!-- <table border="1">
+        <thead>
+            <tr>
+                <th>Bed ID</th>
+                <th>Patient Name</th>
+                <th>Doctor Name</th>
+                <th>Disease</th>
+                <th>Severity</th>
+                <th>Severity Order</th>
+                <th>Queue Number</th>
+                <th>Allocated Date</th>
+                <th>Allocated Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% beds.forEach(bed => { %>
+            <tr>
+                <td><%= bed.bed_id %></td>
+                <td><%= bed.patient_name %></td>
+                <td><%= bed.doctor_name %></td>
+                <td><%= bed.disease %></td>
+                <td><%= bed.severity %></td>
+                <td><%= bed.severity_order %></td>
+                <td><%= bed.queue_number %></td>
+                <td><%= bed.allocated_date %></td>
+                <td><%= bed.allocated_time %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table> -->
+
+    <!-- Bed Allocation Matrix -->
+    <h2>6x4 Bed Allocation Matrix</h2>
+    <table class="matrix-table">
+        <% 
+        // Initialize a 6x4 matrix with zeros
+        let matrix = Array(6).fill().map(() => Array(4).fill(0));
+
+        // Fill the matrix based on severity
+        beds.forEach((bed, index) => {
+            let severityValue = 0;
+            if (bed.severity === 'High') severityValue = 1;
+            else if (bed.severity === 'Medium') severityValue = 2;
+            else if (bed.severity === 'Low') severityValue = 3;
+
+            // Calculate matrix position
+            let row = Math.floor(index / 4);
+            let col = index % 4;
+            matrix[row][col] = severityValue;
+        });
+        
+        // Render the matrix with images
+        for (let i = 0; i < 6; i++) {
+            %>
+            <tr>
+                <% for (let j = 0; j < 4; j++) { %>
+                    <td onclick="showModal(<%= i * 4 + j %>)">
+                        <% 
+                        // Determine the image source based on severity value
+                        let imgSrc = 'empty.png'; // Default image
+                        if (matrix[i][j] === 1) imgSrc = 'danger.png';
+                        else if (matrix[i][j] === 2) imgSrc = 'medium.png';
+                        else if (matrix[i][j] === 3) imgSrc = 'general.png';
+                        
+                        %>
+                        <img src="<%= imgSrc %>" alt="Severity Level">
+                    </td>
+                <% } %>
+            </tr>
+        <% } %>
+    </table>
+
+    <!-- Modal Structure -->
+    <div id="patientModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Patient Details</h2>
+            <p><strong>Bed ID:</strong> <span id="modalBedId"></span></p>
+            <p><strong>Patient Name:</strong> <span id="modalPatientName"></span></p>
+            <p><strong>Doctor Name:</strong> <span id="modalDoctorName"></span></p>
+            <p><strong>Disease:</strong> <span id="modalDisease"></span></p>
+            <p><strong>Severity:</strong> <span id="modalSeverity"></span></p>
+            <p><strong>Severity Order:</strong> <span id="modalSeverityOrder"></span></p>
+            <p><strong>Queue Number:</strong> <span id="modalQueueNumber"></span></p>
+            <p><strong>Allocated Date:</strong> <span id="modalAllocatedDate"></span></p>
+            <p><strong>Allocated Time:</strong> <span id="modalAllocatedTime"></span></p>
+        </div>
+    </div>
+
+    <script>
+        const beds = <%- JSON.stringify(beds) %>; // Pass data to client-side script
+
+        function showModal(index) {
+            if (index >= beds.length) return; // Avoid out-of-bounds errors
+
+            const bed = beds[index];
+
+            // Populate modal with bed data
+            document.getElementById('modalBedId').innerText = bed.bed_id;
+            document.getElementById('modalPatientName').innerText = bed.patient_name;
+            document.getElementById('modalDoctorName').innerText = bed.doctor_name;
+            document.getElementById('modalDisease').innerText = bed.disease;
+            document.getElementById('modalSeverity').innerText = bed.severity;
+            document.getElementById('modalSeverityOrder').innerText = bed.severity_order;
+            document.getElementById('modalQueueNumber').innerText = bed.queue_number;
+            document.getElementById('modalAllocatedDate').innerText = new Date(bed.allocated_date).toDateString();
+            document.getElementById('modalAllocatedTime').innerText = new Date(bed.allocated_time).toTimeString();
+
+            // Show modal
+            document.getElementById('patientModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('patientModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

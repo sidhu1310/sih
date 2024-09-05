@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors by Pincode</title>
+   
+</head>
+<link rel="stylesheet" href="tables.css"> <!-- Link to your CSS file -->
+<body>
+    <h1>Find Doctors by Pincode</h1>
+
+    <!-- Form to enter pincode -->
+    <form action="/doctors-by-pincode" method="POST">
+        <label for="pincode">Enter Pincode:</label>
+        <input type="text" id="pincode" name="pincode" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (doctors && doctors.length > 0) { %>
+        <h2>Doctors in Pincode(s): <%= pincode %></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Doctor ID</th>
+                    <th>Doctor Name</th>
+                    <th>Specialization</th>
+                    <th>Timing</th>
+                    <th>Years of Experience</th>
+                    <th>Department</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% doctors.forEach(function(doctor) { %>
+                    <tr>
+                        <td><%= doctor.doctor_id %></td>
+                        <td><%= doctor.doctor_name %></td>
+                        <td><%= doctor.specialization %></td>
+                        <td><%= doctor.timing %></td>
+                        <td><%= doctor.years_of_experience %></td>
+                        <td><%= doctor.department %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else if (pincode) { %>
+        <p>No doctors found for the entered pincode(s).</p>
+    <% } %>
+
+    <a href="/">Back to Home</a>
+</body>
+</html>

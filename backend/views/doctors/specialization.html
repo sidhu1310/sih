@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Specializations</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-content h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-content p {
+            color: #777;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Doctor Specializations</h1>
+
+    <div class="cards-container">
+        <!-- Cardiologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Cardiologist" alt="Cardiologist">
+            <div class="card-content">
+                <h3>Cardiologist</h3>
+                <p>Heart specialist focused on diagnosing and treating heart-related conditions.</p>
+            </div>
+        </div>
+        <!-- Dermatologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Dermatologist" alt="Dermatologist">
+            <div class="card-content">
+                <h3>Dermatologist</h3>
+                <p>Expert in skin, hair, and nail disorders, providing specialized skin care.</p>
+            </div>
+        </div>
+        <!-- Pediatrician Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Pediatrician" alt="Pediatrician">
+            <div class="card-content">
+                <h3>Pediatrician</h3>
+                <p>Medical professional specializing in the care of infants, children, and adolescents.</p>
+            </div>
+        </div>
+        <!-- Neurologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Neurologist" alt="Neurologist">
+            <div class="card-content">
+                <h3>Neurologist</h3>
+                <p>Specialist in nervous system disorders, including the brain and spinal cord.</p>
+            </div>
+        </div>
+        <!-- Orthopedist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Orthopedist" alt="Orthopedist">
+            <div class="card-content">
+                <h3>Orthopedist</h3>
+                <p>Expert in diagnosing and treating musculoskeletal system disorders.</p>
+            </div>
+        </div>
+        <!-- Nephrologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Nephrologist" alt="Nephrologist">
+            <div class="card-content">
+                <h3>Nephrologist</h3>
+                <p>Focuses on kidney health and treats kidney-related conditions and diseases.</p>
+            </div>
+        </div>
+        <!-- Endocrinologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Endocrinologist" alt="Endocrinologist">
+            <div class="card-content">
+                <h3>Endocrinologist</h3>
+                <p>Specializes in hormone imbalances and diseases affecting the endocrine system.</p>
+            </div>
+        </div>
+        <!-- Psychiatrist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Psychiatrist" alt="Psychiatrist">
+            <div class="card-content">
+                <h3>Psychiatrist</h3>
+                <p>Medical doctor specializing in mental health, including substance use disorders.</p>
+            </div>
+        </div>
+        <!-- Oncologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Oncologist" alt="Oncologist">
+            <div class="card-content">
+                <h3>Oncologist</h3>
+                <p>Focuses on diagnosing and treating cancer and providing comprehensive care.</p>
+            </div>
+        </div>
+        <!-- Pulmonologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Pulmonologist" alt="Pulmonologist">
+            <div class="card-content">
+                <h3>Pulmonologist</h3>
+                <p>Specialist in respiratory system disorders, including the lungs and bronchial tubes.</p>
+            </div>
+        </div>
+        <!-- Rheumatologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Rheumatologist" alt="Rheumatologist">
+            <div class="card-content">
+                <h3>Rheumatologist</h3>
+                <p>Deals with rheumatic diseases and conditions involving joints, muscles, and ligaments.</p>
+            </div>
+        </div>
+        <!-- Urologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Urologist" alt="Urologist">
+            <div class="card-content">
+                <h3>Urologist</h3>
+                <p>Specializes in urinary tract diseases and male reproductive organs.</p>
+            </div>
+        </div>
+        <!-- Gynecologist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=Gynecologist" alt="Gynecologist">
+            <div class="card-content">
+                <h3>Gynecologist</h3>
+                <p>Focuses on women's reproductive health, including pregnancy and childbirth.</p>
+            </div>
+        </div>
+        <!-- ENT Specialist Card -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x200?text=ENT+Specialist" alt="ENT Specialist">
+            <div class="card-content">
+                <h3>ENT Specialist</h3>
+                <p>Treats conditions related to the ear, nose, and throat, as well as related structures.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

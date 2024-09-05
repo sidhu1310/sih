@@ -1,0 +1,15 @@
+username:
+rahulphotos806
+
+password:
+3TmHKte4PA86Bk7b
+
+link:
+mongodb+srv://rahulphotos806:3TmHKte4PA86Bk7b@cluster0.iwwdb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+
+
+superbase:
+proj name:
+med_test_db
+pass: 2FL9e5XOJvmeZgUR

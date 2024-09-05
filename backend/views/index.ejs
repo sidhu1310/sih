@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Platform</title>
+    <link rel="stylesheet" href="/styles.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">BioMed<span>Bot</span></div>
+        <nav class="navbar">
+            <a href="/">Home</a>
+            <a href="#">Services</a>
+            <a href="/appointments">Appointments</a>
+            <a href="#">Doctors</a>
+            <a href="#">Hospitals</a>
+            <!-- <a href="#">Pharmacy</a> -->
+            <a href="#">Blog</a>
+            <a href="#">Contact</a>
+        </nav>
+        <!-- <div class="header-buttons">
+            <button class="login-btn">Sign In</button>
+            <button class="signup-btn">Register</button>
+        </div> -->
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Voice Assistant Card -->
+        <div class="voice-assistant-card">
+            <div class="voice-card-content">
+                <h3>HEALTH_CARE Assistant</h3>
+                <p>Ask your questions and get instant responses!</p>
+                <button class="voice-btn">
+                    <i class="fa fa-microphone"></i> Start Listening
+                </button>
+            </div>
+            <div id="transcript" class="transcript"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1>Your Health, Our Priority</h1>
+            <p>Get instant access to world-class healthcare services.</p>
+            <div class="hero-buttons">
+                <a href="/doctors" class="cta-btn">View All Doctors</a>
+
+                <a href="/appointments"><button class="cta-btn">Book an Appointment</button></a>
+            </div>
+            <div class="search-bar">
+                <!-- <select>
+                    <option>Select Specialty</option>
+                    <option>Cardiology</option>
+                    <option>Orthopedics</option>
+                    <option>Neurology</option>
+                </select> -->
+                <!-- <select>
+                    <option>Select Location</option>
+                    <option>City A</option>
+                    <option>City B</option>
+                    <option>City C</option>
+                </select> -->
+                <!-- <button class="search-btn">Search</button> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Bed Availability</h3>
+                <p>Check real-time status for ICU, general, and emergency beds.</p>
+                <a href="/allocate-beds"><button class="service-btn">Check Now</button></a>
+            </div>
+            
+            <div class="service-card">
+                <h3>Book Appointment</h3>
+                <p>Schedule your appointment with leading specialists.</p>
+                <a href="/appointments"><button class="service-btn">Book Now</button></a>
+            </div>
+            <div class="service-card">
+                <h3>Nearby DOCTORS</h3>
+                <p>Find the best hospitals near you with advanced care.</p>
+                <a href="/doctors-by-pincode" class="cta-btn">Find Doctors Nearby</a>
+
+            </div>
+            
+            <div class="service-card">
+                <h3>Best Doctors</h3>
+                <p>Consult top-rated doctors with years of experience.</p>
+                <button class="service-btn">View Doctors</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="#">Services</a>
+                <a href="/appointments">Appointments</a>
+                <a href="#">Doctors</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="/scripts.js"></script>
+</body>
+
+</html>
