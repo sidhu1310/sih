@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Medical Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">AI Medical Assistant</h1>
+
+        <!-- Step 1: Patient Information Form -->
+        <div id="patientForm">
+            <h2 class="text-xl font-semibold mb-2">Enter Patient Details</h2>
+            <form id="detailsForm" class="space-y-4">
+                <div>
+                    <label for="name" class="block mb-1">Name:</label>
+                    <input type="text" id="name" name="name" required class="w-full px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label for="age" class="block mb-1">Age:</label>
+                    <input type="number" id="age" name="age" required class="w-full px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label for="weight" class="block mb-1">Weight (kg):</label>
+                    <input type="number" id="weight" name="weight" step="0.1" required class="w-full px-3 py-2 border rounded">
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    Continue
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: Audio Recording and Transcription -->
+        <div id="audioSection" class="hidden">
+            <h2 class="text-xl font-semibold mb-2">Record Audio for Symptoms</h2>
+            <div class="flex justify-center space-x-4 mb-6">
+                <button id="startRecording" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                    Start Recording
+                </button>
+                <button id="stopRecording" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" disabled>
+                    Stop Recording
+                </button>
+            </div>
+
+            <div id="loading" class="hidden mb-6">
+                <div class="flex items-center justify-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                </div>
+                <p class="text-center mt-2">Processing your audio, please wait...</p>
+            </div>
+
+            <div id="errorContainer" class="hidden mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Error:</strong>
+                <span id="errorMessage" class="block sm:inline"></span>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-2">Dynamic Question:</h3>
+                <div id="questionContainer" class="bg-gray-100 p-4 rounded">Waiting for question...</div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-2">Transcription:</h3>
+                <pre id="transcriptionOutput" class="bg-gray-100 p-4 rounded whitespace-pre-wrap">Waiting for transcription...</pre>
+            </div>
+        </div>
+
+        <!-- Step 3: Final Prediction Form -->
+        <div id="finalPredictionForm" class="hidden">
+            <h3 class="text-lg font-semibold mb-2">Final Prediction</h3>
+            <form id="predictionForm" class="space-y-4">
+                <div>
+                    <label for="symptoms" class="block mb-1">Symptoms:</label>
+                    <textarea id="symptoms" name="symptoms" required class="w-full px-3 py-2 border rounded"></textarea>
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    Get Final Prediction
+                </button>
+            </form>
+            <div class="mb-6 mt-4">
+                <h3 class="text-lg font-semibold mb-2">Prediction:</h3>
+                <pre id="predictionOutput" class="bg-gray-100 p-4 rounded whitespace-pre-wrap">Waiting for prediction...</pre>
+            </div>
+        </div>
+        <a id="dashboardRedirect" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer">
+            Patient Dashboard
+        </a>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let patientData = {};
+
+        document.getElementById('detailsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            patientData.name = document.getElementById('name').value;
+            patientData.age = document.getElementById('age').value;
+            patientData.weight = document.getElementById('weight').value;
+
+            document.getElementById('patientForm').classList.add('hidden');
+            document.getElementById('audioSection').classList.remove('hidden');
+        });
+
+        document.getElementById('startRecording').addEventListener('click', startRecording);
+        document.getElementById('stopRecording').addEventListener('click', stopRecording);
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                mediaRecorder.start();
+                document.getElementById('startRecording').disabled = true;
+                document.getElementById('stopRecording').disabled = false;
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                showError('Unable to access microphone. Please check your permissions.');
+            }
+        }
+
+        async function stopRecording() {
+            mediaRecorder.stop();
+            document.getElementById('startRecording').disabled = false;
+            document.getElementById('stopRecording').disabled = true;
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('errorContainer').classList.add('hidden');
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                audioChunks = [];
+
+                const formData = new FormData();
+                formData.append('file', audioBlob,'recording.wav');
+
+                try {
+                    // Send audio for transcription and get the follow-up question
+                    const response = await axios.post('/process_audio', formData);
+                    const { transcription, question } = response.data;
+
+                    // Update the UI with transcription and dynamic question
+                    document.getElementById('transcriptionOutput').textContent = transcription;
+                    document.getElementById('questionContainer').textContent = question;
+
+                    // Show the symptoms in the final prediction form
+                    document.getElementById('finalPredictionForm').classList.remove('hidden');
+                    document.getElementById('symptoms').value = transcription;
+
+                    document.getElementById('loading').classList.add('hidden');
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('loading').classList.add('hidden');
+                    showError('An error occurred while processing the audio.');
+                }
+            };
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const symptoms = document.getElementById('symptoms').value;
+
+            try {
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('errorContainer').classList.add('hidden');
+
+                const response = await axios.post('/final_prediction', {
+                    name: patientData.name,
+                    age: patientData.age,
+                    weight: patientData.weight,
+                    symptoms
+                });
+                const { final_output } = response.data;
+
+                document.getElementById('predictionOutput').textContent = `Name: ${patientData.name}\nAge: ${patientData.age}\nWeight: ${patientData.weight}\nSymptoms: ${symptoms}\nPredictions: ${final_output}`;
+
+                document.getElementById('loading').classList.add('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').classList.add('hidden');
+                showError('An error occurred while getting the final prediction.');
+            }
+        });
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            errorContainer.classList.remove('hidden');
+            errorMessage.textContent = message;
+        }
+
+        
+document.getElementById('dashboardRedirect').addEventListener('click', function() {
+    const name = encodeURIComponent(patientData.name); // Encode the name to handle special characters
+    const age = patientData.age;
+    const weight = patientData.weight;
+    const symptoms = encodeURIComponent(document.getElementById('symptoms').value); // Encode symptoms to handle special characters
+    const queryParams = new URLSearchParams({ name, age, weight, symptoms });
+    window.location.href = `/patient-dashboard?${queryParams.toString()}`;
+   
+});     
+    </script>
+</body>
+</html>

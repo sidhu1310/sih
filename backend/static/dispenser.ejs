@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispense Medicines</title>
+
+    <style>body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+  }
+  
+  .container {
+      max-width: 900px;
+      margin: auto;
+  }
+  
+  .card {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+  }
+  
+  .card h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+  }
+  
+  label {
+      font-weight: bold;
+      color: #2980b9;
+  }
+  
+  input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #bdc3c7;
+      border-radius: 5px;
+      background-color: #f2f3f5;
+      color: #333;
+      font-size: 14px;
+      margin-top: 5px;
+      box-sizing: border-box;
+  }
+  
+  input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      border-color: #3498db;
+      background-color: #ecf0f1;
+      outline: none;
+  }
+  
+  button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+      background-color: #2980b9;
+  }
+  
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+  }
+  
+  table, th, td {
+      border: 1px solid #bdc3c7;
+  }
+  
+  th, td {
+      padding: 12px;
+      text-align: left;
+  }
+  
+  th {
+      background-color: #ecf0f1;
+      color: #2980b9;
+  }
+  
+  tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+  }
+  
+  tbody tr:hover {
+      background-color: #d1d8e0;
+  }
+  </style>
+
+  </head>
+<body>
+    <h1>Dispense Medicines</h1>
+    <form action="/dispense" method="POST">
+        <label for="medicine_name">Medicine Name:</label>
+        <select id="medicine_name" name="medicine_name" onchange="updateFields()" required>
+            <option value="">Select Medicine</option>
+            <% medicines.forEach(medicine => { %>
+                <option value="<%= medicine.medicine_name %>" 
+                        data-dosage="<%= medicine.dosage %>"
+                        data-quantity="<%= medicine.quantity %>">
+                    <%= medicine.medicine_name %>
+                </option>
+            <% }) %>
+        </select>
+        <br><br>
+        <label for="dosage">Dosage:</label>
+        <input type="text" id="dosage" name="dosage" readonly>
+        <br><br>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+        <br><br>
+        <button type="submit">Dispense</button>
+    </form>
+
+    <script>
+        function updateFields() {
+            const select = document.getElementById('medicine_name');
+            const dosageInput = document.getElementById('dosage');
+            const quantityInput = document.getElementById('quantity');
+            
+            const selectedOption = select.options[select.selectedIndex];
+            const dosage = selectedOption.getAttribute('data-dosage');
+            const quantity = selectedOption.getAttribute('data-quantity');
+
+            dosageInput.value = dosage;
+            quantityInput.setAttribute('max', quantity);
+        }
+    </script>
+</body>
+</html>

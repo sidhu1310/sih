@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    
+    <!-- Tailwind CSS for general styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Animate.css for pre-defined animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+<style>
+    
+</style>
+</head>
+<body class="bg-gradient-to-r from-purple-500 to-indigo-500 min-h-screen flex items-center justify-center">
+    <div class="dashboard-container bg-white p-8 rounded-2xl shadow-lg w-full max-w-3xl transform scale-95 opacity-0 animate__animated animate__fadeIn">
+        <h1 class="text-4xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-500">
+            Patient Dashboard
+        </h1>
+        <div class="patient-details">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">Patient Details</h2>
+            <p><strong>Name:</strong> <%= patient.patient_name %></p>
+            <p><strong>Age:</strong> <%= patient.age ? patient.age : 'N/A' %></p>
+            <p><strong>Weight:</strong> <%= patient.weight ? patient.weight : 'N/A' %></p>
+            <p><strong>Mail:</strong> <%= patient.mail ? patient.mail : 'N/A' %></p>
+            <p><strong>Pincode:</strong> <%= patient.pincode ? patient.pincode : 'N/A' %></p>
+            <p><strong>Chatbot Prediction:</strong> <%= patient.chatbot ? patient.chatbot : 'No data available' %></p>
+            <p><strong>Previous Medical History Summary</Summary></Summary>:</strong> <%= patient.summarizer ? patient.summarizer : 'N/A' %></p>
+            <p><strong>Severity:</strong> <%= patient.severity ? patient.severity : 'N/A' %></p>
+            <p><strong>Specialist:</strong> <%= specialist %></p>
+        </div>
+        
+        <a href="/">
+            <button class="back-home-btn bg-gradient-to-r from-teal-400 to-blue-600 hover:from-blue-600 hover:to-teal-400 text-white font-bold py-3 px-6 rounded-full shadow-lg mt-8 transform hover:scale-110 transition duration-500 ease-in-out">
+                Back to Home
+            </button>
+        </a>
+    </div>
+
+    <!-- GSAP Animation -->
+    <script>
+        gsap.to(".dashboard-container", {
+            scale: 1,
+            opacity: 1,
+            duration: 1.2,
+            ease: "power2.out",
+            delay: 0.3,
+        });
+
+        gsap.from(".patient-details p", {
+            opacity: 0,
+            y: 50,
+            stagger: 0.2,
+            duration: 0.8,
+            ease: "power2.out"
+        });
+
+        gsap.from(".back-home-btn", {
+            opacity: 0,
+            y: 100,
+            delay: 1.2,
+            duration: 1,
+            ease: "elastic.out(1, 0.8)"
+        });
+    </script>
+</body>
+</html>

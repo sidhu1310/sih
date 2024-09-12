@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Medicines Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        canvas {
+            max-width: 100%;
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.4em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4 text-center">All Medicines Dashboard</h1>
+
+        <!-- Card for Medicine Quantity Distribution -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Medicine Quantity Distribution</h5>
+                <canvas id="quantityChart"></canvas>
+                <div id="loadingQuantityChart" class="text-center mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card for Medicine Dispensed vs Available -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Medicine Dispensed vs Available</h5>
+                <canvas id="dispensedVsAvailableChart"></canvas>
+                <div id="loadingDispensedVsAvailableChart" class="text-center mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card for Medicines Expiry Distribution -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Medicines Expiry Distribution</h5>
+                <canvas id="expiryChart"></canvas>
+                <div id="loadingExpiryChart" class="text-center mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card for Detailed Medicine Data -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Detailed Medicine Data</h5>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Quantity</th>
+                            <th>Date of Issue</th>
+                            <th>Type of Medication</th>
+                            <th>Date of Expiry</th>
+                            <th>Dosage</th>
+                            <th>Dispensed</th>
+                            <th>Dispensed Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% medicines.forEach(medicine => { %>
+                            <tr>
+                                <td><%= medicine.id %></td>
+                                <td><%= medicine.medicine_name %></td>
+                                <td><%= medicine.quantity %></td>
+                                <td><%= medicine.date_of_issue ? new Date(medicine.date_of_issue).toLocaleDateString() : 'N/A' %></td>
+                                <td><%= medicine.type_of_medication %></td>
+                                <td><%= medicine.date_of_expiry ? new Date(medicine.date_of_expiry).toLocaleDateString() : 'N/A' %></td>
+                                <td><%= medicine.dosage %></td>
+                                <td><%= medicine.dispensed ? 'Yes' : 'No' %></td>
+                                <td><%= medicine.dispensed_date ? new Date(medicine.dispensed_date).toLocaleDateString() : 'N/A' %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts for Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const medicines =  JSON.stringify(medicines);
+
+            if (medicines.length === 0) {
+                console.error('No medicine data available.');
+                return;
+            }
+
+            // Data for Medicine Quantity Distribution
+            const quantityLabels = medicines.map(m => m.medicine_name);
+            const quantityData = medicines.map(m => m.quantity);
+
+            const quantityCtx = document.getElementById('quantityChart').getContext('2d');
+            new Chart(quantityCtx, {
+                type: 'bar',
+                data: {
+                    labels: quantityLabels,
+                    datasets: [{
+                        label: 'Quantity of Medicines',
+                        data: quantityData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Quantity'
+                            }
+                        }
+                    }
+                }
+            });
+            document.getElementById('loadingQuantityChart').style.display = 'none';
+
+            // Data for Medicine Dispensed vs Available
+            const dispensedCount = medicines.filter(m => m.dispensed).length;
+            const availableCount = medicines.length - dispensedCount;
+
+            const dispensedVsAvailableCtx = document.getElementById('dispensedVsAvailableChart').getContext('2d');
+            new Chart(dispensedVsAvailableCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Dispensed', 'Available'],
+                    datasets: [{
+                        data: [dispensedCount, availableCount],
+                        backgroundColor: ['#36a2eb', '#ff6384'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            document.getElementById('loadingDispensedVsAvailableChart').style.display = 'none';
+
+            // Data for Medicines Expiry Distribution
+            const expiryLabels = medicines.map(m => m.medicine_name);
+            const expiryData = medicines.map(m => {
+                const today = new Date();
+                const expiryDate = new Date(m.date_of_expiry);
+                const daysToExpire = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                return daysToExpire <= 0 ? 0 : daysToExpire;
+            });
+
+            const expiryCtx = document.getElementById('expiryChart').getContext('2d');
+            new Chart(expiryCtx, {
+                type: 'line',
+                data: {
+                    labels: expiryLabels,
+                    datasets: [{
+                        label: 'Days to Expiry',
+                        data: expiryData,
+                        borderColor: '#ff6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `${tooltipItem.label}: ${tooltipItem.raw} days`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        }
+                    }
+                }
+            });
+            document.getElementById('loadingExpiryChart').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

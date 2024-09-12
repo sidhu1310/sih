@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bed Allocation</title>
+    <style>
+ body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: #333;
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 60px;
+    color: #fff;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s;
+}
+
+.navigation:hover {
+    background: rgba(0, 0, 0, 1);
+}
+
+.navigation button {
+    background: linear-gradient(135deg, #f06, #f9a);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    margin: 0 5px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.navigation button:hover {
+    background: linear-gradient(135deg, #f9a, #f06);
+    transform: scale(1.05);
+}
+
+.content-container {
+    display: flex;
+    margin-top: 80px;
+    width: calc(100% - 250px);
+    margin-left: 250px;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    flex-grow: 1;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    position: relative;
+}
+
+.dashboard {
+    width: 250px;
+    height: 100vh;
+    background: #333;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    border-radius: 0 15px 15px 0;
+    background: linear-gradient(135deg, #333, #555);
+}
+
+.dashboard h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.dashboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dashboard li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 100%;
+    transition: left 0.4s ease;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.section.active {
+    left: 0;
+}
+
+.matrix-table {
+    border-collapse: collapse;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.matrix-table td, .matrix-table th {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.matrix-table td:hover {
+    background-color: #f0f8ff;
+}
+
+.matrix-table img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s;
+}
+
+.matrix-table img:hover {
+    transform: scale(1.2);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal-content {
+    background: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close {
+    color: #333;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #f06;
+}
+
+    </style>
+</head><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bed Allocation</title>
+    <style>
+ body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: #333;
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 60px;
+    color: #fff;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s;
+}
+
+.navigation:hover {
+    background: rgba(0, 0, 0, 1);
+}
+
+.navigation button {
+    background: linear-gradient(135deg, #f06, #f9a);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    margin: 0 5px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.navigation button:hover {
+    background: linear-gradient(135deg, #f9a, #f06);
+    transform: scale(1.05);
+}
+
+.content-container {
+    display: flex;
+    margin-top: 80px;
+    width: calc(100% - 250px);
+    margin-left: 250px;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    flex-grow: 1;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    position: relative;
+}
+
+.dashboard {
+    width: 250px;
+    height: 100vh;
+    background: #333;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    border-radius: 0 15px 15px 0;
+    background: linear-gradient(135deg, #333, #555);
+}
+
+.dashboard h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.dashboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dashboard li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 100%;
+    transition: left 0.4s ease;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.section.active {
+    left: 0;
+}
+
+.matrix-table {
+    border-collapse: collapse;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.matrix-table td, .matrix-table th {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.matrix-table td:hover {
+    background-color: #f0f8ff;
+}
+
+.matrix-table img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s;
+}
+
+.matrix-table img:hover {
+    transform: scale(1.2);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal-content {
+    background: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close {
+    color: #333;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #f06;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <h2>Dashboard</h2>
+        <ul>
+            <li>Total Beds: <span id="totalBeds">24</span></li>
+            <li>Occupied Beds: <span id="occupiedBeds">10</span></li>
+            <li>Available Beds: <span id="availableBeds">14</span></li>
+            <li>Patients in Queue: <span id="patientsQueue">5</span></li>
+            <li>Emergency Cases: <span id="emergencyCases">3</span></li>
+        </ul>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navigation">
+        <button onclick="showSection('all')">All Ward</button>
+        <button onclick="showSection('general')">General Ward</button>
+        <button onclick="showSection('emergency')">Emergency Ward</button>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="content-container">
+        <!-- Content Sections -->
+        <div class="content">
+            <div id="allSection" class="section active">
+                <h2>6x4 Bed Allocation Matrix</h2>
+                <table class="matrix-table">
+                    <% 
+                    let matrix = Array(6).fill().map(() => Array(4).fill(0));
+
+                    beds.forEach((bed, index) => {
+                        let severityValue = 0;
+                        if (bed.severity === 'High') severityValue = 1;
+                        else if (bed.severity === 'Medium') severityValue = 2;
+                        else if (bed.severity === 'Low') severityValue = 3;
+
+                        let row = Math.floor(index / 4);
+                        let col = index % 4;
+                        matrix[row][col] = severityValue;
+                    });
+
+                    for (let i = 0; i < 6; i++) {
+                        %>
+                        <tr>
+                            <% for (let j = 0; j < 4; j++) { %>
+                                <td onclick="showModal(<%= i * 4 + j %>)">
+                                    <% 
+                                    let imgSrc = 'empty.png';
+                                    if (matrix[i][j] === 1) imgSrc = 'danger.png';
+                                    else if (matrix[i][j] === 2) imgSrc = 'medium.png';
+                                    else if (matrix[i][j] === 3) imgSrc = 'general.png';
+                                    %>
+                                    <img src="<%= imgSrc %>" alt="Severity Level">
+                                </td>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                </table>
+            </div>
+
+            <div id="generalSection" class="section">
+                <h2>General Ward - Bed Availability</h2>
+                <table class="matrix-table">
+                    <% 
+                    let matrixGeneral = Array(6).fill().map(() => Array(4).fill(null));
+                    let generalIndex = 0;
+                
+                    beds.forEach((bed, index) => {
+                        if (bed.severity === 'Low' || bed.severity === 'Medium') {
+                            let severityValue = bed.severity === 'Medium' ? 2 : 3;
+                            let row = Math.floor(generalIndex / 4);
+                            let col = generalIndex % 4;
+                            matrixGeneral[row][col] = { index, severityValue };
+                            generalIndex++;
+                        }
+                    });
+                
+                    for (let i = 0; i < 6; i++) {
+                        %>
+                        <tr>
+                            <% for (let j = 0; j < 4; j++) { 
+                                const cell = matrixGeneral[i][j];
+                                if (cell) {
+                            %>
+                                <td onclick="showModal(<%= cell.index %>)">
+                                    <% 
+                                    let imgSrc = 'empty.png';
+                                    if (cell.severityValue === 2) imgSrc = 'medium.png';
+                                    else if (cell.severityValue === 3) imgSrc = 'general.png';
+                                    %>
+                                    <img src="<%= imgSrc %>" alt="Severity Level">
+                                </td>
+                            <% } else { %>
+                                <td><img src="empty.png" alt="Empty"></td>
+                            <% } } %>
+                        </tr>
+                    <% } %>
+                </table>
+            </div>
+
+            <div id="emergencySection" class="section">
+                <h2>Emergency Ward - Bed Availability</h2>
+                <table class="matrix-table">
+                    <% 
+                    let matrixEmergency = Array(6).fill().map(() => Array(4).fill(null));
+                    let emergencyIndex = 0;
+                
+                    beds.forEach((bed, index) => {
+                        if (bed.severity === 'High') {
+                            let severityValue = 1;
+                            let row = Math.floor(emergencyIndex / 4);
+                            let col = emergencyIndex % 4;
+                            matrixEmergency[row][col] = { index, severityValue };
+                            emergencyIndex++;
+                        }
+                    });
+                
+                    for (let i = 0; i < 6; i++) {
+                        %>
+                        <tr>
+                            <% for (let j = 0; j < 4; j++) { 
+                                const cell = matrixEmergency[i][j];
+                                if (cell) {
+                            %>
+                                <td onclick="showModal(<%= cell.index %>)">
+                                    <% 
+                                    let imgSrc = 'empty.png';
+                                    if (cell.severityValue === 1) imgSrc = 'danger.png';
+                                    %>
+                                    <img src="<%= imgSrc %>" alt="Severity Level">
+                                </td>
+                            <% } else { %>
+                                <td><img src="empty.png" alt="Empty"></td>
+                            <% } } %>
+                        </tr>
+                    <% } %>
+                </table>
+                
+            </div>
+        
+            <!-- Modal Structure -->
+            <div id="patientModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2>Patient Details</h2>
+                    <p><strong>Bed ID:</strong> <span id="modalBedId"></span></p>
+                    <p><strong>Patient Name:</strong> <span id="modalPatientName"></span></p>
+                    <p><strong>Doctor Name:</strong> <span id="modalDoctorName"></span></p>
+                    <p><strong>Disease:</strong> <span id="modalDisease"></span></p>
+                    <p><strong>Severity:</strong> <span id="modalSeverity"></span></p>
+                    <p><strong>Severity Order:</strong> <span id="modalSeverityOrder"></span></p>
+                    <p><strong>Queue Number:</strong> <span id="modalQueueNumber"></span></p>
+                    <p><strong>Allocated Date:</strong> <span id="modalAllocatedDate"></span></p>
+                    <p><strong>Allocated Time:</strong> <span id="modalAllocatedTime"></span></p>
+                </div>
+            </div>
+        
+            <script>// Assuming 'beds' is available globally or fetched from the server
+                const beds = <%- JSON.stringify(beds) %>;
+                
+                // Function to update the dashboard
+                function updateDashboard() {
+                    // Calculate matrix size
+                    const rows = 6; // Number of rows in matrix
+                    const cols = 4; // Number of columns in matrix
+                    const totalBeds = rows * cols;
+                
+                    // Create a matrix based on the current beds data
+                    const matrix = Array(rows).fill().map(() => Array(cols).fill(0));
+                    
+                    beds.forEach((bed, index) => {
+                        let severityValue = 0;
+                        if (bed.severity === 'High') severityValue = 1;
+                        else if (bed.severity === 'Medium') severityValue = 2;
+                        else if (bed.severity === 'Low') severityValue = 3;
+                
+                        let row = Math.floor(index / cols);
+                        let col = index % cols;
+                        matrix[row][col] = severityValue;
+                    });
+                
+                    // Calculate occupied beds and other metrics
+                    let occupiedBeds = 0;
+                    let patientsQueue = 0;
+                    let emergencyCases = 0;
+                
+                    matrix.forEach(row => {
+                        row.forEach(cell => {
+                            if (cell > 0) occupiedBeds++;
+                        });
+                    });
+                
+                    patientsQueue = beds.filter(bed => bed.queue_number).length;
+                    emergencyCases = beds.filter(bed => bed.severity === 'High').length;
+                    const availableBeds = totalBeds - occupiedBeds;
+                
+                    // Update dashboard elements
+                    document.getElementById('totalBeds').textContent = totalBeds;
+                    document.getElementById('occupiedBeds').textContent = occupiedBeds;
+                    document.getElementById('availableBeds').textContent = availableBeds;
+                    document.getElementById('patientsQueue').textContent = patientsQueue;
+                    document.getElementById('emergencyCases').textContent = emergencyCases;
+                }
+                
+                // Function to show modal with patient details
+                function showModal(index) {
+                    if (index >= 0 && index < beds.length) {
+                        const bed = beds[index];
+                        document.getElementById('modalBedId').textContent = bed.bed_id;
+                        document.getElementById('modalPatientName').textContent = bed.patient_name;
+                        document.getElementById('modalDoctorName').textContent = bed.doctor_name;
+                        document.getElementById('modalDisease').textContent = bed.disease;
+                        document.getElementById('modalSeverity').textContent = bed.severity;
+                        document.getElementById('modalSeverityOrder').textContent = bed.severity === 'High' ? '1' : bed.severity === 'Medium' ? '2' : '3';
+                        document.getElementById('modalQueueNumber').textContent = bed.queue_number || 'N/A';
+                        document.getElementById('modalAllocatedDate').textContent = bed.allocated_date;
+                        document.getElementById('modalAllocatedTime').textContent = bed.allocated_time;
+                
+                        document.getElementById('patientModal').style.display = 'block';
+                
+                        // After showing the modal, ensure the dashboard reflects the current state
+                        updateDashboard();
+                    }
+                }
+                
+                // Function to close the modal
+                function closeModal() {
+                    document.getElementById('patientModal').style.display = 'none';
+                }
+                
+                // Function to show different sections of the dashboard
+                function showSection(sectionId) {
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === sectionId + 'Section') {
+                            section.classList.add('active');
+                        }
+                    });
+                }
+                
+                // Initialize dashboard with data
+                updateDashboard();
+                
+            </script>
+            </body>
+       
+        
+        </html>

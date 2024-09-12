@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Severity and Disease</title>
+</head>
+<body>
+    <h1>Severity and Disease Page</h1>
+    
+    <h2>Patient Details</h2>
+    <p>Name: <%= patient_name %></p>
+    <p>Age: <%= age %></p>
+    <p>Weight: <%= weight %></p>
+    <p>Pincode: <%= pincode %></p>
+    
+    <h2>Image Summarization</h2>
+    <form action="/severity-disease" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required />
+        <input type="hidden" name="patient_name" value="<%= patient_name %>">
+        <button type="submit">Upload Image</button>
+    </form>
+    
+    <% if (typeof summary !== 'undefined') { %>
+        <h3>Summary</h3>
+        <p><%= summary %></p>
+    <% } %>
+
+
+<h1>--------------------------------------------------------</h1>
+<!--     
+<h2>Update Patient Details</h2>
+<form action="/severity-disease" method="post">
+    <label for="summarizer">Summarizer:</label>
+    <textarea id="summarizer" name="summarizer"><%= summarizer %></textarea>
+    
+    <label for="chatbot">Chatbot:</label>
+    <textarea id="chatbot" name="chatbot"><%= chatbot %></textarea>
+    
+    <button type="submit">Update</button>
+</form> -->
+<h1>--------------------------------------------------------</h1>
+<a href="/">
+<button>Home</button>
+</a>
+<a href="/book-appointment">
+    <button>AI Chat Assistant</button>
+    </a>
