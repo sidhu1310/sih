@@ -13,7 +13,6 @@ const fs = require('fs');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const cors=require('cors');
-
 const router = express.Router();
 const pgSession = require('connect-pg-simple')(session);
 const axios=require('axios');
@@ -23,9 +22,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'static'));  // Point Express to use 'static' for views
 app.use(express.static('public')); // For static files like CSS
 app.use(express.urlencoded({ extended: true })); // To parse form data
-
-
-
 
 
 
@@ -60,7 +56,6 @@ async function fetchUserFromDatabase(username) {
       throw error; // Throw error to handle it in the login route
   }
 }
-
 
 
 // Mapping of diseases to doctor specializations
@@ -112,37 +107,33 @@ app.get('/appointments', async (req, res) => {
 
 //////////////////////////////////////////////
 // Show the initial booking form
+
+
 app.get('/book-appointment', (req, res) => {
   res.render('book-appointment');
 });
-
-// Handle submission from the initial booking form
 app.post('/book-appointment', (req, res) => {
   const { patient_name, age, weight, pincode } = req.body;
   res.render('severity-disease', { patient_name, age, weight, pincode });
 });
 
-// Book an appointment with priority queue assignment
 app.post('/confirm-appointment', async (req, res) => {
   const { patient_name, disease, severity, age, weight, pincode } = req.body;
 
   try {
     const client = await pool.connect();
 
-    // Get specialization based on disease
     const specialization = diseaseSpecializationMap[disease];
     if (!specialization) {
       client.release();
       return res.status(404).send('No specialization found for the entered disease.');
     }
 
-    // Check if patient exists, otherwise insert new patient
     let patientQuery = `SELECT * FROM patients WHERE patient_name = $1 LIMIT 1;`;
     let patientResult = await client.query(patientQuery, [patient_name]);
     let patient_id;
 
     if (patientResult.rows.length === 0) {
-      // Insert new patient if not exists
       const insertPatientQuery = `
         INSERT INTO patients (patient_id, patient_name, disease, severity, age, weight, pincode)
         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6)
@@ -151,15 +142,12 @@ app.post('/confirm-appointment', async (req, res) => {
       const insertPatientResult = await client.query(insertPatientQuery, [patient_name, disease, severity, age, weight, pincode]);
       patient_id = insertPatientResult.rows[0].patient_id;
     } else {
-      // Use existing patient_id
       patient_id = patientResult.rows[0].patient_id;
     }
 
-    // Determine the appropriate queue number for the appointment based on severity
-    const appointmentDate = new Date(); // Customize the date selection logic if needed
-    const severityOrder = severityLevel[severity]; // Set severity order
+    const appointmentDate = new Date(); 
+    const severityOrder = severityLevel[severity]; 
 
-    // Find the best available doctor for the given specialization
     const findDoctorQuery = `
       SELECT * FROM doctors 
       WHERE specialization = $1 
@@ -189,7 +177,6 @@ app.post('/confirm-appointment', async (req, res) => {
     const timeSlotResult = await client.query(timeSlotQuery, [severityOrder]);
     const queue_number = timeSlotResult.rows[0].next_queue_number;
 
-    // Insert the appointment into the database
     const insertAppointmentQuery = `
       INSERT INTO appointments (doctor_id, doctor_name, specialization, appointment_date, patient_id, patient_name, queue_number, disease, severity, severity_order, age, weight, pincode)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
@@ -211,12 +198,15 @@ app.post('/confirm-appointment', async (req, res) => {
     ]);
 
     client.release();
-    res.redirect('/appointments'); // Redirect to the appointments page after booking
+    res.redirect('/appointments'); 
   } catch (err) {
     console.error('Error booking appointment:', err);
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
 /////////////////////////////////
 // Display the bed booking form
 app.get('/book-bed', (req, res) => {
@@ -281,12 +271,10 @@ app.get('/doctors', async (req, res) => {
   }
 });
 ///////////////////////////////////////////
-
 // Route to display the form for searching doctors by pincode
 app.get('/doctors-by-pincode', (req, res) => {
   res.render('doctors-by-pincode', { doctors: null, pincode: null });
 });
-
 
 // Route to handle pincode search
 app.post('/doctors-by-pincode', async (req, res) => {
@@ -294,12 +282,33 @@ app.post('/doctors-by-pincode', async (req, res) => {
 
   try {
     const client = await pool.connect();
-    // Query to find doctors based on pincode1, pincode2, or pincode3
+
+    // Query to find doctors based on pincode1, pincode2, or pincode3, and associate with hospitals
     const doctorsQuery = `
-      SELECT doctor_id, doctor_name, specialization, timing, years_of_experience, department
-      FROM doctors
-      WHERE pincode1 = $1 OR pincode2 = $1 OR pincode3 = $1;
+      SELECT 
+        d.doctor_id, 
+        d.doctor_name, 
+        d.specialization, 
+        d.timing, 
+        d.years_of_experience, 
+        d.department,
+        COALESCE(h1.hospital_name, '') AS hospital_for_pincode1,
+        COALESCE(h2.hospital_name, '') AS hospital_for_pincode2,
+        COALESCE(h3.hospital_name, '') AS hospital_for_pincode3
+      FROM 
+        doctors d
+      LEFT JOIN 
+        hospitals h1 ON d.pincode1 = h1.pincode
+      LEFT JOIN 
+        hospitals h2 ON d.pincode2 = h2.pincode
+      LEFT JOIN 
+        hospitals h3 ON d.pincode3 = h3.pincode
+      WHERE 
+        d.pincode1 = $1
+        OR d.pincode2 = $1
+        OR d.pincode3 = $1;
     `;
+
     const doctorsResult = await client.query(doctorsQuery, [pincode]);
     client.release();
 
@@ -406,7 +415,7 @@ async function summarizeText(text, maxLength = 150, minLength = 200) {
   try {
     console.log(Object.keys(ollama));
     const response = await ollama.chat({
-      model: 'phi3:mini-128k',
+      model: 'llama3.1',
       messages: [{ role: 'user', content: "Summarize the following text such that only the medical related information should be concentrated and given it in a concise manner covering everything: " + text }],
     });
 
@@ -492,7 +501,7 @@ app.post('/final_prediction', express.json(), async (req, res) => {
       Patient Symptoms: ${symptoms}
       
       Severity:[low/medium/high]
-      Specialist Recomended:[ENT Specialist/ Urologist/ Oncologist/ Endocrinologist/ Gynecologist/ Cardiologist/ Ophthalmologist/ Orthopedics/ Pediatrician/ Gastroenterologist/ Neurologist/ Nephrology/ Pulmonologist/ Psychiatrist/ Rheumatologist/ Hematologist/General Medicine/Dermatologist]
+      Specialist Recomended:[ENT Specialist/ Urologist/ Oncologist/ Endocrinologist/ Gynecologist/ Cardiologist/ Ophthalmologist/ Orthopedics/ Pediatrician/ Gastroenterologist/ Neurologist/ Nephrology/ Pulmonologist/ Psychiatrist/ Rheumatologist/ Hematologist/General Medicine/Dermatologist] choose only one Specialist
       {the output is limited to 100 words only}`;
 
       const ollamaResponse = await queryOllama(prompt);
@@ -543,12 +552,13 @@ app.post('/process_audio', upload.single('file'), async (req, res) => {
       Your question:`;
 
       const ollamaResponse = await queryOllama(prompt);
-
+      let symptomslist = [];
+      symptomslist.push(transcription);
       res.json({
-          transcription: transcription,
+          transcription: symptomslist.join('\n'),
           question: ollamaResponse
       });
-
+      
   } catch (error) {
       logger.error('Error in process_audio', error);
       res.status(500).json({ detail:` Error processing audio: ${error.message}` });
@@ -883,6 +893,194 @@ app.get('/dashboard', async (req, res) => {
       res.status(500).send('Internal Server Error');
   }
 });
+
+
+
+///////////////////////////////////////////////////////
+/////////////////////////////////////////
+          // live consultancy
+
+          app.get('/live-consultation', async (req, res) => {
+            const { pincode, name, specialist } = req.query;
+        
+            if (!pincode || !name || !specialist) {
+                return res.status(400).send('Pincode, name, and specialization query parameters are required');
+            }
+        
+            try {
+                // Fetch hospitals based on pincode
+                const hospitalsQuery = 'SELECT * FROM hospitals WHERE pincode = $1';
+                const hospitalsResult = await pool.query(hospitalsQuery, [pincode]);
+        
+                // Fetch doctors based on pincode and specialization
+                const doctorsQuery = `
+                  SELECT 
+                    d.doctor_id, 
+                    d.doctor_name, 
+                    d.specialization, 
+                    d.timing, 
+                    d.years_of_experience, 
+                    d.department,
+                    COALESCE(h1.hospital_name, '') AS hospital_for_pincode1
+                  FROM 
+                    doctors d
+                  LEFT JOIN 
+                    hospitals h1 ON d.pincode1 = h1.pincode
+                  WHERE 
+                    (d.pincode1 = $1 OR d.pincode2 = $1 OR d.pincode3 = $1)
+                    AND d.specialization = $2;
+                `;
+                const doctorsResult = await pool.query(doctorsQuery, [pincode, specialist]);
+        
+                // If no doctors are found for the pincode, fetch doctors based on specialization only
+                let doctors = doctorsResult.rows;
+                if (doctors.length === 0) {
+                    const fallbackDoctorsQuery = `
+                      SELECT 
+                        d.doctor_id, 
+                        d.doctor_name, 
+                        d.specialization, 
+                        d.timing, 
+                        d.years_of_experience, 
+                        d.department,
+                        COALESCE(h1.hospital_name, '') AS hospital_for_pincode1
+                      FROM 
+                        doctors d
+                      LEFT JOIN 
+                        hospitals h1 ON d.pincode1 = h1.pincode
+                      WHERE 
+                        d.specialization = $1;
+                    `;
+                    const fallbackDoctorsResult = await pool.query(fallbackDoctorsQuery, [specialist]);
+                    doctors = fallbackDoctorsResult.rows;
+                }
+        
+                // Render the live-consultation.ejs template and pass the data
+                res.render('live-consultation', {
+                    pincode,
+                    hospitals: hospitalsResult.rows,
+                    doctors: doctors,
+                    specialist
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                res.status(500).send('Server error');
+            }
+        });
+        
+        // Route to handle live consultation by pincode
+// live consultancy route to handle both displaying doctors and booking appointments
+// live consultancy route to handle both displaying doctors and booking appointments
+app.post('/live-consultation', async (req, res) => {
+  const { doctor_id, doctor_name, specialization, pincode, patient_name, age, weight, mail, severity, disease } = req.body;
+
+  // If doctor_id exists, it means the form was submitted for booking
+  if (doctor_id) {
+    try {
+      const query = `
+        INSERT INTO appointments (
+          doctor_id, 
+          doctor_name, 
+          specialization, 
+          appointment_date, 
+          pincode,
+          patient_name,
+          age,
+          weight,
+          mail,
+          severity,
+          disease
+       
+        ) 
+        VALUES (
+          $1, 
+          $2, 
+          $3, 
+          CURRENT_DATE, 
+          $4,
+          $5,
+          $6,
+          $7,
+          $8,
+          $9,
+          $10
+
+        );
+      `;
+      const values = [doctor_id, doctor_name, specialization, pincode, patient_name, age, weight, mail, severity, disease];
+      await pool.query(query, values);
+
+      res.send('Appointment booked successfully!');
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  } else {
+    // Display doctors as usual if no form data is submitted
+    const { pincode, name, specialist } = req.query;
+
+    if (!pincode || !name || !specialist) {
+      return res.status(400).send('Pincode, name, and specialization query parameters are required');
+    }
+
+    try {
+      const hospitalsQuery = 'SELECT * FROM hospitals WHERE pincode = $1';
+      const hospitalsResult = await pool.query(hospitalsQuery, [pincode]);
+
+      const doctorsQuery = `
+        SELECT 
+          d.doctor_id, 
+          d.doctor_name, 
+          d.specialization, 
+          d.timing, 
+          d.years_of_experience, 
+          d.department,
+          COALESCE(h1.hospital_name, '') AS hospital_for_pincode1
+        FROM 
+          doctors d
+        LEFT JOIN 
+          hospitals h1 ON d.pincode1 = h1.pincode
+        WHERE 
+          (d.pincode1 = $1 OR d.pincode2 = $1 OR d.pincode3 = $1)
+          AND d.specialization = $2;
+      `;
+      const doctorsResult = await pool.query(doctorsQuery, [pincode, specialist]);
+
+      let doctors = doctorsResult.rows;
+      if (doctors.length === 0) {
+        const fallbackDoctorsQuery = `
+          SELECT 
+            d.doctor_id, 
+            d.doctor_name, 
+            d.specialization, 
+            d.timing, 
+            d.years_of_experience, 
+            d.department,
+            COALESCE(h1.hospital_name, '') AS hospital_for_pincode1
+          FROM 
+            doctors d
+          LEFT JOIN 
+            hospitals h1 ON d.pincode1 = h1.pincode
+          WHERE 
+            d.specialization = $1;
+        `;
+        const fallbackDoctorsResult = await pool.query(fallbackDoctorsQuery, [specialist]);
+        doctors = fallbackDoctorsResult.rows;
+      }
+
+      res.render('live-consultation', {
+        pincode,
+        hospitals: hospitalsResult.rows,
+        doctors: doctors,
+        specialist
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).send('Server error');
+    }
+  }
+});
+
 /////////////////////////////////////
 // Start the server
 const PORT = process.env.PORT || 3000;

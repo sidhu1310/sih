@@ -1,0 +1,46 @@
+<% if (doctors && doctors.length > 0) { %>
+    <h2>Doctors and Hospitals in <%= pincode ? 'Pincode(s): ' + pincode : 'Specialization: ' + specialist %></h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor ID</th>
+                <th>Doctor Name</th>
+                <th>Specialization</th>
+                <th>Timing</th>
+                <th>Years of Experience</th>
+                <th>Department</th>
+                <th>Hospital</th>
+                <th>Select Doctor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% doctors.forEach(function(doctor) { %>
+                <tr>
+                    <td><%= doctor.doctor_id %></td>
+                    <td><%= doctor.doctor_name %></td>
+                    <td><%= doctor.specialization %></td>
+                    <td><%= doctor.timing %></td>
+                    <td><%= doctor.years_of_experience %></td>
+                    <td><%= doctor.department %></td>
+                    <td><%= doctor.hospital_for_pincode1 || 'No hospital available' %></td>
+                    <td>
+                        <!-- Form to submit the selected doctor -->
+                        <form action="/live-consultation" method="POST">
+                            <input type="hidden" name="doctor_id" value="<%= doctor.doctor_id %>">
+                            <input type="hidden" name="doctor_name" value="<%= doctor.doctor_name %>">
+                            <input type="hidden" name="specialization" value="<%= doctor.specialization %>">
+                            <input type="hidden" name="pincode" value="<%= pincode %>">
+                            <input type="hidden" name="patient_name" value="<%= patient_name %>">
+                            <input type="hidden" name="disease" value="<%= disease %>">
+                            <input type="hidden" name="severity" value="<%= severity %>">
+                            
+                            <button type="submit">Choose</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No doctors found.</p>
+<% } %>

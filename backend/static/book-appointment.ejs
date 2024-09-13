@@ -94,6 +94,7 @@
         let mediaRecorder;
         let audioChunks = [];
         let patientData = {};
+        let symptomsList = [];
 
         document.getElementById('detailsForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -142,11 +143,11 @@
                     // Send audio for transcription and get the follow-up question
                     const response = await axios.post('/process_audio', formData);
                     const { transcription, question } = response.data;
-
+                    
                     // Update the UI with transcription and dynamic question
                     document.getElementById('transcriptionOutput').textContent = transcription;
                     document.getElementById('questionContainer').textContent = question;
-
+                    symptomsList.push(transcription);
                     // Show the symptoms in the final prediction form
                     document.getElementById('finalPredictionForm').classList.remove('hidden');
                     document.getElementById('symptoms').value = transcription;
@@ -162,8 +163,7 @@
 
         document.getElementById('predictionForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            const symptoms = document.getElementById('symptoms').value;
-
+            const symptoms = symptomsList.join('\n');
             try {
                 document.getElementById('loading').classList.remove('hidden');
                 document.getElementById('errorContainer').classList.add('hidden');

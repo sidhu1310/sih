@@ -464,23 +464,25 @@ h1 {
                 <h2>General Ward - Bed Availability</h2>
                 <table class="matrix-table">
                     <% 
-                    let matrixGeneral = Array(6).fill().map(() => Array(4).fill(null));
+                    const generalRows = 6;
+                    const generalCols = 2;
+                    let matrixGeneral = Array(generalRows).fill().map(() => Array(generalCols).fill(null));
                     let generalIndex = 0;
                 
                     beds.forEach((bed, index) => {
                         if (bed.severity === 'Low' || bed.severity === 'Medium') {
                             let severityValue = bed.severity === 'Medium' ? 2 : 3;
-                            let row = Math.floor(generalIndex / 4);
-                            let col = generalIndex % 4;
+                            let row = Math.floor(generalIndex / generalCols);
+                            let col = generalIndex % generalCols;
                             matrixGeneral[row][col] = { index, severityValue };
                             generalIndex++;
                         }
                     });
                 
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < generalRows; i++) {
                         %>
                         <tr>
-                            <% for (let j = 0; j < 4; j++) { 
+                            <% for (let j = 0; j < generalCols; j++) { 
                                 const cell = matrixGeneral[i][j];
                                 if (cell) {
                             %>
@@ -504,23 +506,25 @@ h1 {
                 <h2>Emergency Ward - Bed Availability</h2>
                 <table class="matrix-table">
                     <% 
-                    let matrixEmergency = Array(6).fill().map(() => Array(4).fill(null));
+                    const emergencyRows = 6;
+                    const emergencyCols = 2;
+                    let matrixEmergency = Array(emergencyRows).fill().map(() => Array(emergencyCols).fill(null));
                     let emergencyIndex = 0;
                 
                     beds.forEach((bed, index) => {
                         if (bed.severity === 'High') {
                             let severityValue = 1;
-                            let row = Math.floor(emergencyIndex / 4);
-                            let col = emergencyIndex % 4;
+                            let row = Math.floor(emergencyIndex / emergencyCols);
+                            let col = emergencyIndex % emergencyCols;
                             matrixEmergency[row][col] = { index, severityValue };
                             emergencyIndex++;
                         }
                     });
                 
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < emergencyRows; i++) {
                         %>
                         <tr>
-                            <% for (let j = 0; j < 4; j++) { 
+                            <% for (let j = 0; j < emergencyCols; j++) { 
                                 const cell = matrixEmergency[i][j];
                                 if (cell) {
                             %>
@@ -557,7 +561,8 @@ h1 {
                 </div>
             </div>
         
-            <script>// Assuming 'beds' is available globally or fetched from the server
+            <script>
+                // Assuming 'beds' is available globally or fetched from the server
                 const beds = <%- JSON.stringify(beds) %>;
                 
                 // Function to update the dashboard
@@ -645,6 +650,7 @@ h1 {
                 
             </script>
             </body>
+
        
         
         </html>

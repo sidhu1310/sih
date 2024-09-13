@@ -17,9 +17,18 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
 
-<style>
-    
-</style>
+    <style>
+        /* Custom styles can go here */
+        .button-container {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-r from-purple-500 to-indigo-500 min-h-screen flex items-center justify-center">
     <div class="dashboard-container bg-white p-8 rounded-2xl shadow-lg w-full max-w-3xl transform scale-95 opacity-0 animate__animated animate__fadeIn">
@@ -34,14 +43,29 @@
             <p><strong>Mail:</strong> <%= patient.mail ? patient.mail : 'N/A' %></p>
             <p><strong>Pincode:</strong> <%= patient.pincode ? patient.pincode : 'N/A' %></p>
             <p><strong>Chatbot Prediction:</strong> <%= patient.chatbot ? patient.chatbot : 'No data available' %></p>
-            <p><strong>Previous Medical History Summary</Summary></Summary>:</strong> <%= patient.summarizer ? patient.summarizer : 'N/A' %></p>
+            <p><strong>Previous Medical History Summary:</strong> <%= patient.summarizer ? patient.summarizer : 'N/A' %></p>
             <p><strong>Severity:</strong> <%= patient.severity ? patient.severity : 'N/A' %></p>
             <p><strong>Specialist:</strong> <%= specialist %></p>
+            <p><strong>Disease:</strong> <%= patient.disease %></p>
+
         </div>
-        
-        <a href="/">
-            <button class="back-home-btn bg-gradient-to-r from-teal-400 to-blue-600 hover:from-blue-600 hover:to-teal-400 text-white font-bold py-3 px-6 rounded-full shadow-lg mt-8 transform hover:scale-110 transition duration-500 ease-in-out">
+    </div>
+
+    <!-- Buttons fixed to the bottom of the screen -->
+    <div class="button-container">
+        <a href="/index">
+            <button class="bg-gradient-to-r from-teal-400 to-blue-600 hover:from-blue-600 hover:to-teal-400 text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-110 transition duration-500 ease-in-out">
                 Back to Home
+            </button>
+        </a>
+        <a href="/video-conference">
+            <button class="bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-500 hover:to-pink-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-110 transition duration-500 ease-in-out">
+                Video Conference
+            </button>
+        </a>
+        <a id="consultation-link" href="#">
+            <button class="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-600 hover:to-green-400 text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-110 transition duration-500 ease-in-out">
+                Live Consultation
             </button>
         </a>
     </div>
@@ -64,13 +88,23 @@
             ease: "power2.out"
         });
 
-        gsap.from(".back-home-btn", {
+        gsap.from(".back-home-btn, .video-conference-btn, .live-consultation-btn", {
             opacity: 0,
             y: 100,
             delay: 1.2,
             duration: 1,
             ease: "elastic.out(1, 0.8)"
+
         });
+
+        document.getElementById('consultation-link').addEventListener('click', function() {
+            const name = encodeURIComponent('<%= patient.patient_name %>'); // Ensure the value is dynamically injected
+            const pincode = '<%= patient.pincode %>';
+            const specialist = '<%= specialist %>'; // Assuming this is passed from the server
+            const disease = '<%= patient.disease %>';
+            const queryParams = new URLSearchParams({ pincode, name, specialist,disease});
+            window.location.href = `/live-consultation?${queryParams.toString()}`;
+        });  
     </script>
 </body>
 </html>

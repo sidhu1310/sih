@@ -42,4 +42,128 @@
     <button type="submit">Register</button>
   </form>
 </body>
+<style>
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2.8rem;
+  color: #333;
+  text-align: center;
+  margin: 20px 0;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Form Container */
+form {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin-top: 120px; /* Adjusted to avoid overlap with heading */
+  box-sizing: border-box;
+}
+
+/* Form Input Fields */
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #007bff;
+  background-color: #eef6ff;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
+
+button:active {
+  transform: scale(1);
+}
+
+/* Form Spacing and Alignment */
+form label, form input, form button {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+  font-size: 0.95rem;
+  color: #aaa;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  form {
+    padding: 30px;
+  }
+
+  h1 {
+    font-size: 2.3rem;
+  }
+
+  input, button {
+    font-size: 1rem;
+  }
+}
+</style>
 </html>

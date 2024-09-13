@@ -19,7 +19,7 @@
     </form>
 
     <% if (doctors && doctors.length > 0) { %>
-        <h2>Doctors in Pincode(s): <%= pincode %></h2>
+        <h2>Doctors and Hospitals in Pincode(s): <%= pincode %></h2>
         <table>
             <thead>
                 <tr>
@@ -29,6 +29,9 @@
                     <th>Timing</th>
                     <th>Years of Experience</th>
                     <th>Department</th>
+                    <th>Hospital (Pincode 1)</th>
+                    <!-- <th>Hospital (Pincode 2)</th>
+                    <th>Hospital (Pincode 3)</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +43,9 @@
                         <td><%= doctor.timing %></td>
                         <td><%= doctor.years_of_experience %></td>
                         <td><%= doctor.department %></td>
+                        <td><%= doctor.hospital_for_pincode1 || 'N/A' %></td>
+                        <!-- <td><%= doctor.hospital_for_pincode2 || 'N/A' %></td>
+                        <td><%= doctor.hospital_for_pincode3 || 'N/A' %></td> -->
                     </tr>
                 <% }); %>
             </tbody>
@@ -47,7 +53,7 @@
     <% } else if (pincode) { %>
         <p>No doctors found for the entered pincode(s).</p>
     <% } %>
-
+    
     <a href="/">Back to Home</a>
 </body>
 </html>
