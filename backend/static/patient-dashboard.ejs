@@ -53,7 +53,7 @@
 
     <!-- Buttons fixed to the bottom of the screen -->
     <div class="button-container">
-        <a href="/index">
+        <a href="/">
             <button class="bg-gradient-to-r from-teal-400 to-blue-600 hover:from-blue-600 hover:to-teal-400 text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-110 transition duration-500 ease-in-out">
                 Back to Home
             </button>
@@ -102,6 +102,7 @@
             const pincode = '<%= patient.pincode %>';
             const specialist = '<%= specialist %>'; // Assuming this is passed from the server
             const disease = '<%= patient.disease %>';
+            const severity = '<%= patient.severity %>';
             const queryParams = new URLSearchParams({ pincode, name, specialist,disease});
             window.location.href = `/live-consultation?${queryParams.toString()}`;
         });  

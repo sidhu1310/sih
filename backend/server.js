@@ -79,7 +79,7 @@ const diseaseSpecializationMap = {
 // Severity levels mapping for priority
 const severityLevel = {
   'High': 1,
-  'Medium': 2,
+  'medium': 2,
   'Low': 3,
 };
 
@@ -901,12 +901,12 @@ app.get('/dashboard', async (req, res) => {
           // live consultancy
 
           app.get('/live-consultation', async (req, res) => {
-            const { pincode, name, specialist } = req.query;
+            const { pincode, name, specialist ,disease,severity} = req.query;
         
             if (!pincode || !name || !specialist) {
                 return res.status(400).send('Pincode, name, and specialization query parameters are required');
             }
-        
+            console.log(name);
             try {
                 // Fetch hospitals based on pincode
                 const hospitalsQuery = 'SELECT * FROM hospitals WHERE pincode = $1';
@@ -957,10 +957,11 @@ app.get('/dashboard', async (req, res) => {
         
                 // Render the live-consultation.ejs template and pass the data
                 res.render('live-consultation', {
+                    name,
                     pincode,
                     hospitals: hospitalsResult.rows,
                     doctors: doctors,
-                    specialist
+                    specialist,disease,severity
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -977,6 +978,7 @@ app.post('/live-consultation', async (req, res) => {
   // If doctor_id exists, it means the form was submitted for booking
   if (doctor_id) {
     try {
+      const query1 = `Select severity from patients where patient_name = $1`;
       const query = `
         INSERT INTO appointments (
           doctor_id, 
@@ -990,7 +992,6 @@ app.post('/live-consultation', async (req, res) => {
           mail,
           severity,
           disease
-       
         ) 
         VALUES (
           $1, 
@@ -1004,10 +1005,10 @@ app.post('/live-consultation', async (req, res) => {
           $8,
           $9,
           $10
-
         );
       `;
-      const values = [doctor_id, doctor_name, specialization, pincode, patient_name, age, weight, mail, severity, disease];
+      const result=await pool.query(query1, [patient_name]);
+      const values = [doctor_id, doctor_name, specialization, pincode, patient_name, age, weight, mail, result.rows[0].severity, disease];
       await pool.query(query, values);
 
       res.send('Appointment booked successfully!');
