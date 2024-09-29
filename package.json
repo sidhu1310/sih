@@ -10,7 +10,16 @@
     "multer": "^1.4.5-lts.1",
     "pg": "^8.12.0",
     "tesseract.js": "5.1.1",
-    "ollama-node": "0.1.28"
+    "ollama-node": "0.1.28",
+    "winston": "3.14.2",
+    "bcrypt": "5.1.1",
+    "axios": "1.7.7",
+    "body-parser": "1.20.2",
+    "connect-pg-simple": "9.0.1",
+    "cors": "2.8.5",
+    "express-fileupload": "1.4.0",
+    "googleapis": "102.0.0",
+    "node-fetch": "3.3.0"
   },
   "name": "medicure",
   "version": "1.0.0",
