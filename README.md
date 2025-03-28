@@ -1,4 +1,4 @@
-# Medicure - A Medical Assistance Web App
+# CareConnect - A Medical Assistance Web App
 
 ## Project Description
 
@@ -43,7 +43,7 @@
 
    ```sh
    git clone https://github.com/sidhu1310/sih.git
-   cd medicure
+   cd sih
    ```
 
 2. **Install Dependencies**
