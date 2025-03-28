@@ -42,7 +42,7 @@
 1. **Clone the Repository**
 
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/sidhu1310/sih.git
    cd medicure
    ```
 
