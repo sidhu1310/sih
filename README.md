@@ -85,6 +85,7 @@
    - Use LLaMA 3.1 8B for medical diagnosis.
 8. **Interface**
    ![WhatsApp Image 2026-01-08 at 22 41 13(1)](https://github.com/user-attachments/assets/c9537ffd-b333-4da7-a6af-6df4f3b3a3ce)
+   ![WhatsApp Image 2026-01-08 at 22 41 13](https://github.com/user-attachments/assets/582c70d0-cc73-4a53-80db-0e56f9573fcd)
 
 ## Contributors
 
