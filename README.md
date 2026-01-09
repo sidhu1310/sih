@@ -2,7 +2,7 @@
 
 ## Project Description
 
-**Medicure** is a web-based application that leverages AI, OCR, and cloud APIs to assist users in efficiently managing medical records, prescriptions, and health-related documents. The platform includes **text extraction from images (OCR), secure data storage, speech recognition, AI-based medical diagnosis, bed allocation management, and inventory management.**
+**Care Connect** is a web-based application that leverages AI, OCR, and cloud APIs to assist users in efficiently managing medical records, prescriptions, and health-related documents. The platform includes **text extraction from images (OCR), secure data storage, speech recognition, AI-based medical diagnosis, bed allocation management, and inventory management.**
 
 ## Features
 
