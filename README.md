@@ -89,8 +89,6 @@
 - **K. Sidhartha Rao** ([GitHub](https://github.com/sidhu1310))
 - **S. Srinija** ([GitHub](https://github.com/Srinija1102))
 - **P. Rahul** ([GitHub](https://github.com/rahul5892))
-- **U. Sathwik** ([GitHub](https://github.com/Sathwik0862))
-
 ## License
 
 This project is licensed under the MIT License.
